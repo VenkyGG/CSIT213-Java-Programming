@@ -1,4 +1,4 @@
-package Tutorials.Tut1.T04F;
+package Tutorials.Tut1.T04F.Practice.Part1;
 
 public class Q5 {
     public static void main(String[] args) {

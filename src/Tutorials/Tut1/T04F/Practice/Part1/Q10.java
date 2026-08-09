@@ -1,6 +1,4 @@
-package Tutorials.Tut1.T04F;
-
-import java.util.Random;
+package Tutorials.Tut1.T04F.Practice.Part1;
 
 public class Q10 {
     public static void main(String[] args) {

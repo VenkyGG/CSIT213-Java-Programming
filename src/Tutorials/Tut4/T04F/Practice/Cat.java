@@ -1,4 +1,4 @@
-package Tutorials.Tut4.T04F.Pet;
+package Tutorials.Tut4.T04F.Practice;
 
 public class Cat extends Pet implements PetInterface {
     public Cat(String name, String breed, double weight) {

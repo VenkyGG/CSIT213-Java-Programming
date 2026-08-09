@@ -1,4 +1,4 @@
-package Tutorials.Tut4.T04F.Pet;
+package Tutorials.Tut4.T04F.Practice;
 
 public class Dog extends Pet implements PetInterface {
     private boolean microchipped;

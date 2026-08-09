@@ -1,4 +1,4 @@
-package Tutorials.Tut4.T04F.Pet;
+package Tutorials.Tut4.T04F.Practice;
 
 public abstract class Pet {
     // Protected -> accessible to child class

@@ -1,4 +1,4 @@
-package Tutorials.Tut4.T04F.Pet;
+package Tutorials.Tut4.T04F.Practice;
 
 public interface PetInterface {
     // Method declaration in interface are all abstract by default
