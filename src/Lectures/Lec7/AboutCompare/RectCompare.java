@@ -1,4 +1,4 @@
-package Lectures.Lec7;
+package Lectures.Lec7.AboutCompare;
 
 public class RectCompare implements ICompare {
     public boolean compare(Object obj1, Object obj2) {

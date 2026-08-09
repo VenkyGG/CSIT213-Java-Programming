@@ -1,4 +1,4 @@
-package Lectures.Lec7;
+package Lectures.Lec7.AboutCompare;
 
 public class FracCompare implements ICompare {
     @Override

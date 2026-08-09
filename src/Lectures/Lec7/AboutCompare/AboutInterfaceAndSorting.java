@@ -1,6 +1,4 @@
-package Lectures.Lec7;
-
-import java.util.RandomAccess;
+package Lectures.Lec7.AboutCompare;
 
 public class AboutInterfaceAndSorting {
     public static void main(String[] argv){

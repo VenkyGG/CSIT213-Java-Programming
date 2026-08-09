@@ -1,4 +1,4 @@
-package Lectures.Lec7;
+package Lectures.Lec7.AboutFileIO;
 
 import java.util.ArrayList;
 import java.util.Scanner;

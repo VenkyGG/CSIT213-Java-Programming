@@ -1,4 +1,4 @@
-package Lectures.Lec7;
+package Lectures.Lec7.AboutCompare;
 
 public interface ICompare {
     // If obj1 is greater than obj2, return true

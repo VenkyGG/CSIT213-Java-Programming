@@ -1,4 +1,4 @@
-package Lectures.Lec7;
+package Lectures.Lec7.AboutInterface;
 
 public class DemoA implements DemoI {
     @Override
