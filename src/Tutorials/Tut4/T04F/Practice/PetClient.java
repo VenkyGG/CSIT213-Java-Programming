@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class PetClient {
     public static void main(String[] args) {
         try {
-            run("data/lab4_pet_data.csv");
+            run("data/lab_4_pet_data.csv");
         } catch (FileNotFoundException ex) {
             System.out.println("Data file not found.");
         }

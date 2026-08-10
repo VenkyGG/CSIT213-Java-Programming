@@ -8,11 +8,24 @@ public abstract class Claim {
     private LocalDate dateOfClaim;
 
     public Claim(String empId, LocalDate dateOfWork) {
+        // Defensive coding
+        if (empId == null || empId.isBlank()) {
+            throw new IllegalArgumentException("empId must be provided");
+        }
+
+        if (dateOfWork == null) {
+            throw new IllegalArgumentException("dateOfWork must be provided.");
+        }
+
         this.empId = empId;
         this.dateOfClaim = dateOfWork;
     }
 
     public String getEmpId() { return this.empId; }
+
+    public int getYearOfClaim() {
+        return dateOfClaim.getYear();
+    }
 
     public int getMonthOfClaim() { return this.dateOfClaim.getMonthValue(); }
 
@@ -20,6 +33,7 @@ public abstract class Claim {
 
     public abstract double getClaimAmount();
 
+    @Override
     public boolean equals(Object other) {
         if (this == other)
             return true;
