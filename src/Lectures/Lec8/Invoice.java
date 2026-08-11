@@ -23,6 +23,18 @@ public class Invoice {
 
     public double getTotal() { return hours * rate; }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+
+        if (!(other instanceof Invoice))
+            return false;
+
+        Invoice tmp = (Invoice) other;
+        return tmp.code.equalsIgnoreCase(code);
+    }
+
     public String toString() {
         return String.format("%s %d %.2f $%.2f", code, hours, rate, getTotal());
     }
