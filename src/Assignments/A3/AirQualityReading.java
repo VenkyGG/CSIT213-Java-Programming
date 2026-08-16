@@ -11,16 +11,16 @@ public class AirQualityReading {
 
     public AirQualityReading(String sensorId, String district, LocalDate readingDate,
                              double pm25) throws AirQualityDataException {
-        this.sensorId = sensorId;
-        this.district = district;
         if (readingDate == null) {
-            throw new AirQualityDataException("Invalid reading date");
+            throw new AirQualityDataException("Invalid Reading Date");
         }
 
         if (!(pm25 >= 0 && pm25 <= 500)) {
-            throw new AirQualityDataException("Invalid PM2.5");
+            throw new AirQualityDataException("Invalid PM2.5: " + pm25);
         }
 
+        this.sensorId = sensorId;
+        this.district = district;
         this.readingDate = readingDate;
         this.pm25 = pm25;
     }

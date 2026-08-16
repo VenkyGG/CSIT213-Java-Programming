@@ -1,0 +1,25 @@
+# Valid boundary and grouping tests
+2026-03-01,S001,North,0.0
+2026-03-01,S002,North,500.0
+2026-03-01,S003,South,25.5
+2026-03-01,S004,South,35.6
+# Invalid date
+2026-02-30,S005,North,20.0
+# Empty sensor
+2026-03-02,,North,20.0
+# Empty district
+2026-03-02,S006,,20.0
+# Non-numeric PM2.5
+2026-03-02,S007,South,XYZ
+# PM2.5 below range
+2026-03-02,S008,South,-0.01
+# PM2.5 above range
+2026-03-02,S009,South,500.01
+# Multiple errors: bad date + empty sensor
+2026-02-99,,South,520.0
+# Another valid group
+2026-03-02,S010,East,10.0
+2026-03-02,S011,East,20.0
+2026-03-02,S012,East,30.0
+# Hash symbol is NOT at beginning, so this is not a comment
+2026-03-03,S#013,West,40.0

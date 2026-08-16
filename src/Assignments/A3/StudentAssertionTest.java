@@ -1,12 +1,12 @@
 package Assignments.A3;
 
-import java.time.*;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 
 public class StudentAssertionTest {
@@ -24,6 +24,9 @@ public class StudentAssertionTest {
 			testInterfaceAnalyser();
 			testDistrictAirQualityAnalyser();
 			testCityAirStat();
+
+			//testCityAirStatExtra();
+			testExtraCases();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
@@ -38,19 +41,19 @@ public class StudentAssertionTest {
 		}
 
 		// 1) Ensure data.csv exists in current folder
-		Path dataCsv = Paths.get("data.csv");
+		Path dataCsv = Paths.get("data/ass_3_data.csv");
 		assert Files.exists(dataCsv) : "data.csv not found in current folder: " + dataCsv.toAbsolutePath();
 
 		// 2) Run CityAirStat.load()
 		CityAirStat app = new CityAirStat();
-		app.load("data.csv");
+		app.load("data/ass_3_data.csv");
 
 		// Valid data lines = 12 (the first 12 lines are valid readings)
 		// Invalid lines are commented + 4 invalid data lines => they should not be loaded.
 		assert app.getSize() == 12 : "Expected 12 valid readings, but got " + app.getSize();
 
 		// 3) Verify errors.txt content (order not important)
-		Path errorsFile = Paths.get("errors.txt");
+		Path errorsFile = Paths.get("data/ass_3_errors.txt");
 		assert Files.exists(errorsFile) : "errors.txt was not created in current folder.";
 
 		Set<Integer> actualErrorLines = errorLineNumbers(errorsFile);
@@ -70,7 +73,7 @@ public class StudentAssertionTest {
 		app.process(new DistrictAirQualityAnalyser());
 
 		// 5) Verify results.txt content (order not important)
-		Path resultsFile = Paths.get("results.txt");
+		Path resultsFile = Paths.get("data/ass_3_results.txt");
 		assert Files.exists(resultsFile) : "results.txt was not created in current folder.";
 
 		Map<String, Double> actualResults = parseResultsFile(resultsFile);
@@ -383,5 +386,290 @@ public class StudentAssertionTest {
 		} catch (AirQualityDataException e) {
 			assert false : "Should not throw for valid readings: " + e.getMessage();
 		}
+	}
+
+	private static void testCityAirStatExtra() throws Exception {
+
+		CityAirStat app = new CityAirStat();
+		app.load("data/ass_3_extra_data.csv");
+
+		// -----------------------------------------
+		// Test number of valid readings
+		// -----------------------------------------
+		assert app.getSize() == 8
+				: "Expected 8 valid readings, got " + app.getSize();
+
+		// -----------------------------------------
+		// Check errors file
+		// -----------------------------------------
+		Path errorsFile = Paths.get("data/ass_3_errors.txt");
+		assert Files.exists(errorsFile)
+				: "Error file was not created";
+
+		List<String> errors = Files.readAllLines(errorsFile);
+
+		assert errors.size() == 8
+				: "Expected 8 error messages, got " + errors.size()
+				+ "\nErrors: " + errors;
+
+		// Invalid date
+		assert errors.contains("Line 7: Invalid Reading Date")
+				: "Missing invalid date error";
+
+		// Empty sensor
+		assert errors.contains("Line 9: Invalid Sensor ID")
+				: "Missing invalid sensor error";
+
+		// Empty district
+		assert errors.contains("Line 11: Invalid District")
+				: "Missing invalid district error";
+
+		// XYZ
+		assert errors.contains("Line 13: Invalid PM2.5")
+				: "Missing non-numeric PM2.5 error";
+
+		// Below range
+		assert errors.contains("Line 15: Invalid PM2.5: -0.01")
+				: "Missing below-range PM2.5 error";
+
+		// Above range
+		assert errors.contains("Line 17: Invalid PM2.5: 500.01")
+				: "Missing above-range PM2.5 error";
+
+		// Multiple errors from the SAME line
+		assert errors.contains("Line 19: Invalid Reading Date")
+				: "Missing first error from line 19";
+
+		assert errors.contains("Line 19: Invalid Sensor ID")
+				: "Missing second error from line 19";
+
+		// -----------------------------------------
+		// Process results
+		// -----------------------------------------
+		app.process(new DistrictAirQualityAnalyser());
+
+		Path resultsFile = Paths.get("data/ass_3_results.txt");
+		assert Files.exists(resultsFile)
+				: "Results file was not created";
+
+		Map<String, Double> results = parseResultsFile(resultsFile);
+
+		assert results.size() == 4
+				: "Expected 4 result groups, got " + results.size();
+
+		double eps = 0.000001;
+
+		assert Math.abs(results.get("2026-03-01_North") - 250.00) < eps
+				: "Wrong North average";
+
+		assert Math.abs(results.get("2026-03-01_South") - 30.55) < eps
+				: "Wrong South average";
+
+		assert Math.abs(results.get("2026-03-02_East") - 20.00) < eps
+				: "Wrong East average";
+
+		assert Math.abs(results.get("2026-03-03_West") - 40.00) < eps
+				: "Wrong West average";
+
+		System.out.println("All EXTRA CityAirStat tests PASSED.");
+	}
+
+	private static void testExtraCases() throws Exception {
+
+		CityAirStat app = new CityAirStat();
+		app.load("data/ass_3_extra_all_tests.csv");
+
+		// ============================================================
+		// TEST 1: NUMBER OF VALID READINGS
+		// ============================================================
+
+		assert app.getSize() == 10
+				: "Expected 10 valid readings, got " + app.getSize();
+
+		System.out.println("TEST 1 - Valid reading count PASSED.");
+
+
+		// ============================================================
+		// TEST 2: CHECK ERRORS.TXT
+		// ============================================================
+
+		List<String> errors =
+				Files.readAllLines(Paths.get("data/ass_3_errors.txt"));
+
+		// Empty date
+		assert errors.contains("Line 4: Invalid Reading Date")
+				: "Missing empty date error";
+
+		// Empty sensor
+		assert errors.contains("Line 5: Invalid Sensor ID")
+				: "Missing empty sensor error";
+
+		// Empty district
+		assert errors.contains("Line 6: Invalid District")
+				: "Missing empty district error";
+
+		// Empty PM2.5
+		assert errors.contains("Line 7: Invalid PM2.5")
+				: "Missing empty PM2.5 error";
+
+		// Non-numeric PM2.5
+		assert errors.contains("Line 8: Invalid PM2.5")
+				: "Missing non-numeric PM2.5 error";
+
+		// PM2.5 below minimum
+		assert errors.contains("Line 9: Invalid PM2.5: -0.01")
+				: "Missing below-range PM2.5 error";
+
+		// PM2.5 above maximum
+		assert errors.contains("Line 10: Invalid PM2.5: 500.01")
+				: "Missing above-range PM2.5 error";
+
+		// Line 11 contains THREE errors
+		assert errors.contains("Line 11: Invalid Reading Date")
+				: "Missing date error from line 11";
+
+		assert errors.contains("Line 11: Invalid District")
+				: "Missing district error from line 11";
+
+		assert errors.contains("Line 11: Invalid PM2.5")
+				: "Missing PM2.5 error from line 11";
+
+		// We should have exactly 10 error messages
+		assert errors.size() == 10
+				: "Expected 10 error messages, got " + errors.size()
+				+ "\nActual errors: " + errors;
+
+		System.out.println("TEST 2 - Error detection PASSED.");
+
+
+		// ============================================================
+		// TEST 3: PROCESS THE VALID DATA
+		// ============================================================
+
+		app.process(new DistrictAirQualityAnalyser());
+
+		Map<String, Double> results =
+				parseResultsFile(Paths.get("data/ass_3_results.txt"));
+
+		assert results.size() == 6
+				: "Expected 6 result groups, got " + results.size();
+
+		System.out.println("TEST 3 - Result group count PASSED.");
+
+
+		double eps = 0.000001;
+
+
+		// ============================================================
+		// TEST 4: WHITESPACE + AVERAGE
+		// ============================================================
+
+		// 25.5 + 30.5 = 56
+		// 56 / 2 = 28.0
+
+		assert results.containsKey("2026-08-01_North")
+				: "Missing 2026-08-01_North";
+
+		assert Math.abs(
+				results.get("2026-08-01_North") - 28.0
+		) < eps
+				: "Expected North average 28.0, got "
+				+ results.get("2026-08-01_North");
+
+		System.out.println("TEST 4 - Whitespace and average PASSED.");
+
+
+		// ============================================================
+		// TEST 5: SINGLE READING GROUP
+		// ============================================================
+
+		assert results.containsKey("2026-08-01_South")
+				: "Missing 2026-08-01_South";
+
+		assert Math.abs(
+				results.get("2026-08-01_South") - 80.0
+		) < eps
+				: "Expected South value 80.0";
+
+		System.out.println("TEST 5 - Single reading group PASSED.");
+
+
+		// ============================================================
+		// TEST 6: PM2.5 BOUNDARIES
+		// ============================================================
+
+		// Both 0.0 and 500.0 should be accepted.
+		// Average = 250.0
+
+		assert results.containsKey("2026-08-02_West")
+				: "Missing 2026-08-02_West";
+
+		assert Math.abs(
+				results.get("2026-08-02_West") - 250.0
+		) < eps
+				: "Expected boundary average 250.0, got "
+				+ results.get("2026-08-02_West");
+
+		System.out.println("TEST 6 - PM2.5 boundaries PASSED.");
+
+
+		// ============================================================
+		// TEST 7: SAME DISTRICT, DIFFERENT DATE
+		// ============================================================
+
+		assert results.containsKey("2026-08-02_North")
+				: "Missing 2026-08-02_North";
+
+		assert Math.abs(
+				results.get("2026-08-02_North") - 40.0
+		) < eps
+				: "Expected 2026-08-02 North value 40.0";
+
+		System.out.println("TEST 7 - Different dates PASSED.");
+
+
+		// ============================================================
+		// TEST 8: SAME DATE, DIFFERENT DISTRICT
+		// ============================================================
+
+		assert results.containsKey("2026-08-02_South")
+				: "Missing 2026-08-02_South";
+
+		assert Math.abs(
+				results.get("2026-08-02_South") - 60.0
+		) < eps
+				: "Expected 2026-08-02 South value 60.0";
+
+		System.out.println("TEST 8 - Different districts PASSED.");
+
+
+		// ============================================================
+		// TEST 9: ROUNDING
+		// ============================================================
+
+		// (35.2 + 40.6 + 38.1) / 3
+		// = 37.966666...
+		// Rounded = 37.97
+
+		assert results.containsKey("2026-08-03_Central")
+				: "Missing 2026-08-03_Central";
+
+		assert Math.abs(
+				results.get("2026-08-03_Central") - 37.97
+		) < eps
+				: "Expected 37.97, got "
+				+ results.get("2026-08-03_Central");
+
+		System.out.println("TEST 9 - Rounding PASSED.");
+
+
+		// ============================================================
+		// ALL PASSED
+		// ============================================================
+
+		System.out.println();
+		System.out.println("======================================");
+		System.out.println("ALL EXTRA TEST CASES PASSED");
+		System.out.println("======================================");
 	}
 }
