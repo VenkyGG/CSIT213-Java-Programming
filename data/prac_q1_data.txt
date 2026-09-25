@@ -1,0 +1,12 @@
+id,address,length,width,height,weight,status
+p010,address xx,20,10,10,2.5,delivering
+p101,address yy,30,20,15,3.5,received
+p411,address zz,20,10,15,2.5,received
+p273,address bb,30,10,10,4,ready
+p173,address bb,10,10,10,2,ready
+p016,address xx,20,10,10,2.5,delivering
+p011,address xx,50,20,10,4.5,returned
+p011,address xx,50,20,10,4.5,returned
+s013,address yy,10,20,20,4,delivering
+s014,address zz,10,20,20,4,delivering
+s014,address zz,10,20,20,4,delivering
